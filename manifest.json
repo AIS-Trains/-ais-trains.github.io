@@ -1,6 +1,6 @@
 {
-  "name": "AIS Cabina",
-  "short_name": "AIS Cabina",
+  "name": "AIS para maquinistas",
+  "short_name": "AIS demo",
   "lang": "es",
   "start_url": "./",
   "scope": "./",

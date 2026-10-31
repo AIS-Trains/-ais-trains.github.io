@@ -1,16 +1,10 @@
-# AIS Cabina (prototipo)
+# AIS para maquinistas (demostración)
 
-App web (PWA) de avisos por voz para maquinistas, pensada como **complemento de último recurso**.
-No sustituye a la señalización ni a los sistemas de protección del tren. El maquinista decide siempre.
+Demostración explicativa de una idea: que los móviles de los maquinistas compartan su posición
+y se avisen por voz cuando fallan todos los demás sistemas. Es un **complemento de último recurso**;
+no sustituye a la señalización ni a los sistemas de protección. El maquinista decide siempre.
 
-- Usa el GPS del móvil (posición, velocidad, rumbo).
-- Calcula el margen de frenado frente a otros trenes y avisa por voz.
-- Avisa de "vía no confirmada" comparando la posición con las vías de OpenStreetMap.
-- Alarma en ambas vías si un tren está detenido con sistemas degradados.
-- Modo simulación con escenarios ficticios para probarla sin estar en cabina.
-- Capa informativa opcional con posiciones de datos abiertos de transporte (15 a 30 s de retraso; nunca dispara "frena").
+Lugares y trenes inventados (país ficticio de Valdoria, línea Brenna – Castelmar).
 
-Acceso con código, que se entrega aparte. Es un prototipo: el código no es una protección real.
-
-Ficheros: `engine.js` (motor de avisos, sin dependencias), `sim.js` (escenarios), `app.js` (interfaz, GPS, voz).
-Mapa: Leaflet, © OpenStreetMap, © OpenRailwayMap.
+Ficheros: `demo.js` (demostración guiada), `engine.js` (cálculo de avisos), `sim.js` (escenarios),
+`scheme.js` (dibujo de las vías), `app.js` (pantallas y voz).

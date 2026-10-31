@@ -81,3 +81,37 @@ button.ghost { background: transparent; }
 .drive.sim .status { font-size: 17px; padding: 10px 12px; }
 .drive.sim .alert-list { display: none; }
 .drive.sim .ctrl { display: none; }
+
+/* Demostración */
+.demo { padding: 0; }
+.demo-body { flex: 1; padding: 12px 16px; max-width: 560px; width: 100%; margin: 0 auto; }
+.demo-body h2 { margin: 6px 0 10px; }
+.dots { display: flex; gap: 5px; margin-left: 6px; }
+.dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.dots span.on { background: var(--accent); } .dots span.done { background: #4b6a8f; }
+.bar #demo-exit { margin-left: auto; padding: 8px 12px; }
+.live { background: #0c2d3f; color: #cfe9f7; border-radius: 10px; padding: 10px 12px; }
+.wave { fill: none; stroke: #38bdf8; stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; animation: wave 2.4s infinite; }
+.w2 { animation-delay: 1.2s; }
+@keyframes wave { from { opacity: .9; transform: scale(.6); } to { opacity: 0; transform: scale(3.2); } }
+.share-line { fill: none; stroke: #38bdf8; stroke-width: 2; stroke-dasharray: 5 6; animation: dash 1s linear infinite; }
+@keyframes dash { to { stroke-dashoffset: -22; } }
+.fail-list { display: grid; gap: 8px; margin: 8px 0; }
+.fail-list div { background: #2a1416; border: 1px solid #5c2328; color: #fca5a5; padding: 12px; border-radius: 10px; font-weight: 600; }
+.fail-list div span { display: inline-block; width: 22px; }
+.fail-list div.ok { background: #10261a; border-color: #1f5133; color: #86efac; }
+.phone { width: 260px; max-width: 100%; margin: 6px auto; border: 3px solid #3a4652; border-radius: 28px; padding: 14px 10px; background: #070b0f; }
+.phone-in { background: var(--bg); border-radius: 16px; padding: 12px; min-height: 150px; }
+.login-mock { min-height: 230px; }
+.login-mock b { display: block; text-align: center; margin-bottom: 10px; }
+.lf { opacity: 0; animation: fadein .5s forwards; animation-delay: var(--d); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; margin-bottom: 8px; }
+.lf small { display: block; color: var(--muted); font-size: 11px; } .lf span { font-size: 15px; }
+.lf.ok { background: #10261a; border-color: #1f5133; color: #86efac; text-align: center; }
+@keyframes fadein { to { opacity: 1; } }
+.app-mock .am-speed { text-align: center; color: var(--muted); } .app-mock .am-speed b { font-size: 36px; color: var(--fg); }
+.app-mock .status { font-size: 14px; padding: 8px; margin: 6px 0; max-width: none; }
+.app-mock svg { width: 100%; height: auto; display: block; background: #121a22; border-radius: 8px; }
+.scene { background: #4a6b3c; border: none; }
+.hazard { fill: none; stroke: #c084fc; stroke-width: 2.5; animation: haz 1.2s infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes haz { from { opacity: 1; transform: scale(.7); } to { opacity: 0; transform: scale(1.8); } }
+.sc-gapt { font-size: 11px; font-weight: 700; }

@@ -1,6 +1,7 @@
 import { evaluate, distance, bearing, move, levelRank, motionState, DEFAULTS } from './engine.js';
 import { SCENARIOS, Simulation, ORIGIN } from './sim.js';
 import { initScheme, renderScheme, explainNow } from './scheme.js';
+import { runDemo } from './demo.js';
 
 // ---------- Ajustes ----------
 // Código de acceso del prototipo (se compara su SHA-256, no se guarda en claro).
@@ -71,6 +72,16 @@ for (const s of SCENARIOS) {
   simList.appendChild(b);
 }
 $('btn-real').onclick = () => start('real');
+$('btn-demo').onclick = () => {
+  unlockAudio();
+  show('scr-demo');
+  runDemo({
+    root: $('scr-demo'),
+    say,
+    cancelSpeech: () => { try { speechSynthesis.cancel(); } catch {} },
+    onExit: () => show('scr-home'),
+  });
+};
 
 // Pantalla de explicación antes de cada simulación
 let introScn = null;
@@ -123,15 +134,21 @@ function beep(times = 2) {
     o.start(t0); o.stop(t0 + 0.2);
   }
 }
-function say(text, level = 'info') {
-  S.lastText = text;
+function say(text, level = 'info', onend) {
+  if (level !== 'narr') S.lastText = text;
   window.__spoken = (window.__spoken || []).concat([{ text, level, t: Date.now() }]); // para pruebas
   if (level === 'urgente') { beep(3); navigator.vibrate?.([300, 100, 300]); }
-  if (!('speechSynthesis' in window)) return;
+  else if (level === 'aviso' || level === 'info') beep(1); // la voz de la app va precedida de un pitido
+  // Si el navegador no avisa del final de la voz, seguimos igualmente pasado un tiempo prudente.
+  let done = false;
+  const finish = () => { if (!done) { done = true; onend?.(); } };
+  if (onend) setTimeout(finish, 1500 + text.length * 75);
+  if (!('speechSynthesis' in window)) { if (onend) setTimeout(finish, 1500); return; }
   if (level === 'urgente') speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'es-ES'; if (esVoice) u.voice = esVoice;
   u.rate = level === 'urgente' ? 1.1 : 1.0; u.volume = 1;
+  u.onend = finish;
   speechSynthesis.speak(u);
 }
 
@@ -429,9 +446,9 @@ function renderMap(own, others, targets) {
 }
 
 // ---------- Restaurar preferencias ----------
-S.view = store.get('ais.view') || 'voice';
+S.view = 'voice';
 $('seg-view').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.v === S.view));
-S.showPublic = store.get('ais.public') !== '0';
+S.showPublic = false;
 $('chk-public').checked = S.showPublic;
 if (store.get('ais.ok') === CODE_HASH) show(store.get('ais.terms') ? 'scr-home' : 'scr-terms');
 

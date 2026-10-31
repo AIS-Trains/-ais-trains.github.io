@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0f1419">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>AIS Cabina</title>
+<title>AIS para maquinistas</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
@@ -18,8 +18,8 @@
 <!-- 1. Acceso -->
 <section id="scr-access" class="screen active">
   <div class="card">
-    <h1>AIS Cabina</h1>
-    <p class="muted">Prototipo. Acceso solo para maquinistas.</p>
+    <h1>AIS para maquinistas</h1>
+    <p class="muted">Demostración de una idea. Acceso con código.</p>
     <label for="code">Código de acceso</label>
     <input id="code" type="password" autocomplete="off" inputmode="text" placeholder="Código">
     <button id="btn-code" class="primary">Entrar</button>
@@ -27,37 +27,48 @@
   </div>
 </section>
 
-<!-- 2. Aviso legal / uso -->
+<!-- 2. Aviso -->
 <section id="scr-terms" class="screen">
   <div class="card">
     <h2>Antes de empezar</h2>
     <ul class="terms">
-      <li>Es un <b>complemento de último recurso</b>. No sustituye a la señalización ni a los sistemas de protección del tren.</li>
-      <li><b>Tú decides siempre.</b> Los avisos pueden fallar, llegar tarde o ser falsos.</li>
-      <li>Los avisos son <b>por voz</b>. Usa el altavoz de cabina o un auricular, nunca a la vista de viajeros.</li>
-      <li>Con iPhone, la app debe quedarse <b>en pantalla</b> (en un soporte). Si la cierras o bloqueas, deja de avisar.</li>
-      <li>Es un prototipo. Los datos de otros trenes de la red pública llegan con 15 a 30 s de retraso y solo incluyen parte de los trenes.</li>
+      <li>Esto es una <b>demostración explicativa</b> de una idea, no una app en servicio.</li>
+      <li>Los lugares y trenes son <b>inventados</b> (país ficticio de Valdoria, línea Brenna – Castelmar).</li>
+      <li>La idea es un <b>complemento de último recurso</b>: no sustituye a la señalización ni a los sistemas de protección. El maquinista decide siempre.</li>
+      <li>Tiene <b>voz</b>. Sube el volumen.</li>
     </ul>
     <button id="btn-terms" class="primary">Entendido</button>
   </div>
 </section>
 
-<!-- 3. Inicio: elegir modo -->
+<!-- 3. Inicio -->
 <section id="scr-home" class="screen">
   <div class="card">
-    <h2>¿Cómo quieres usarla?</h2>
-    <button id="btn-real" class="primary big">En cabina (GPS real)</button>
-    <p class="muted small">Usa el GPS de este móvil. Pide permiso de ubicación.</p>
-    <h3>Probar en casa (simulación)</h3>
-    <p class="muted small">Elige una situación. Primero te la explicamos y después la ves en movimiento, con la voz de la app.</p>
+    <h1>AIS para maquinistas</h1>
+    <p class="muted">Una idea: que los móviles de los maquinistas se avisen entre sí cuando todo lo demás falla.</p>
+    <button id="btn-demo" class="primary big">▶ Ver demostración</button>
+    <p class="muted small">Unos 4 minutos, con voz. Sube el volumen.</p>
+    <h3>Más ejemplos</h3>
+    <p class="muted small">Otras situaciones, para verlas una a una. En estas tú pulsas el freno.</p>
     <div id="sim-list" class="sim-list"></div>
-    <h3>Pantalla</h3>
-    <div class="seg" id="seg-view">
-      <button data-v="voice" class="on">Solo voz</button>
-      <button data-v="map">Voz + mapa</button>
+    <div hidden>
+      <button id="btn-real"></button>
+      <div class="seg" id="seg-view"><button data-v="voice" class="on"></button><button data-v="map"></button></div>
+      <input type="checkbox" id="chk-public">
     </div>
-    <label class="chk"><input type="checkbox" id="chk-public" checked> Mostrar trenes de datos públicos</label>
   </div>
+</section>
+
+<!-- 3a. Demostración guiada -->
+<section id="scr-demo" class="screen demo">
+  <header class="bar"><span id="demo-step" class="tag sim"></span><div id="demo-dots" class="dots"></div><button id="demo-exit" class="ghost">Salir</button></header>
+  <div class="demo-body">
+    <h2 id="demo-title"></h2>
+    <div id="demo-visual" class="demo-visual"></div>
+    <p id="demo-live" class="explain live" hidden></p>
+    <div id="demo-text" class="intro-text"></div>
+  </div>
+  <div class="ctrl"><button id="demo-prev">Atrás</button><button id="demo-next" class="primary">Siguiente</button></div>
 </section>
 
 <!-- 3b. Explicación de la simulación -->
