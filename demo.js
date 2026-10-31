@@ -45,12 +45,28 @@ const STEPS = [
   {
     key: 'E', title: 'Aviso: tren de frente',
     sim: 'frontal',
-    text: ['Vas a 160 kilómetros por hora. Otro tren viene de frente y puede ir por tu misma vía. Escucha los avisos de la app.'],
+    text: ['Vas a 160 kilómetros por hora. Otro tren viene de frente y puede ir por tu misma vía. Escucha los avisos de la app.',
+      'Cuando hay peligro, la app muestra un botón para llamar directamente al maquinista del otro tren.'],
+    call: [
+      ['A', 'Tren B, aquí el tren que viene de frente. ¿La otra vía la tienes a tu izquierda o a tu derecha?'],
+      ['B', 'A mi derecha.'],
+      ['A', 'Yo la tengo a mi izquierda. Vamos por la misma vía. ¡Frena, frena! Yo también freno.'],
+      ['B', 'Frenando.'],
+    ],
+    callNote: 'El maquinista pulsa «Llamar» y habla con el otro maquinista por el móvil, sin pasar por nadie más.',
+    afterCall: 'Al hablar descubren que van por la misma vía, y los dos frenan antes incluso del aviso de «Frena».',
   },
   {
     key: 'F', title: 'Aviso: tren parado con sistemas caídos',
     sim: 'degradado',
     text: ['Otro caso. Un tren se ha detenido y su maquinista le ha dicho a la app: sistemas caídos. La app no sabe por qué vía está, así que avisa a los trenes de las dos vías.'],
+    call: [
+      ['A', 'Tren B, aquí el tren que se acerca por detrás. ¿Qué te ha pasado?'],
+      ['B', 'Me he parado de golpe y no tengo sistemas. Puede que haya descarrilado y esté invadiendo la otra vía.'],
+      ['A', 'Recibido. Reduzco y paro antes de llegar a ti. Aviso a control.'],
+    ],
+    callNote: 'El maquinista llama al tren parado para saber qué ocurre.',
+    afterCall: 'Con lo que le ha contado, reduce y para antes de llegar, aunque vaya por la otra vía.',
   },
   {
     key: 'G', title: 'En resumen',
@@ -58,7 +74,8 @@ const STEPS = [
     text: [
       'Un móvil por tren, con GPS y voz. Sin instalar nada en la vía ni en el tren.',
       'Avisa de trenes cercanos sin margen de frenado, de trenes parados con sistemas caídos y de posiciones que no coinciden con una vía.',
-      'El maquinista decide siempre. Es una idea en fase de prototipo, que puede cuajar o no. Lo que más importa es la opinión de quienes conducen trenes.',
+      'Ante un peligro, un botón permite llamar directamente al maquinista del otro tren.',
+      'Es una app muy fácil de desarrollar y funciona en cualquier teléfono móvil inteligente, Android o iPhone. El maquinista decide siempre.',
     ],
   },
 ];
@@ -89,6 +106,8 @@ const VISUALS = {
     <div class="lf ok" style="--d:4.2s"><span>✓ Verificado. Avisos activos.</span></div>
   </div></div>`,
   end: `<div class="fail-list"><div class="ok"><span>✓</span> Complemento de último recurso</div>
+    <div class="ok"><span>✓</span> Cualquier móvil inteligente, Android o iPhone</div>
+    <div class="ok"><span>✓</span> Llamada directa al otro maquinista</div>
     <div class="ok"><span>✓</span> Avisos por voz, solo en cabina</div><div class="ok"><span>✓</span> El maquinista decide siempre</div></div>`,
 };
 
@@ -116,7 +135,9 @@ export function runDemo(ui) {
     if (st.sim) {
       vis.innerHTML = `<div class="phone"><div class="phone-in app-mock">
         <div class="am-speed"><b id="dm-speed">0</b> km/h</div>
-        <div id="dm-status" class="status lvl-none">Sin trenes cerca</div></div></div>
+        <div id="dm-status" class="status lvl-none">Sin trenes cerca</div>
+        <button id="dm-call" class="call-btn" hidden>📞 Llamar al maquinista del tren B</button>
+        <div id="dm-convo" class="convo" hidden></div></div></div>
         <p class="muted small" style="margin:10px 0 0">Lo que está pasando en la vía (el maquinista no lo ve):</p>
         <svg id="dm-svg" class="scheme"></svg>`;
       { // Foto fija inicial mientras se lee la situación.
@@ -156,9 +177,35 @@ export function runDemo(ui) {
     initScheme(svg, Math.max(4000, ...s.others.map((o) => o.along + 1000)));
     const spoken = new Map();
     let ended = false;
+    let callState = 'none'; // none → offered → talking → done
+    let rate = 3;
+    const startCall = () => {
+      callState = 'talking'; rate = 1;
+      const btn = $('#dm-call'); btn.classList.add('pressed'); btn.textContent = '📞 Llamando al tren B…';
+      const box = $('#dm-convo'); box.hidden = false; box.innerHTML = '';
+      ui.cancelSpeech();
+      let k = 0;
+      const next = () => {
+        if (my !== token) return;
+        if (k >= st.call.length) {
+          callState = 'done'; rate = 3;
+          btn.textContent = '📞 Llamada terminada';
+          sim.braking = true;
+          for (const o of sim.others) if (o.speed > 0.3) o.braking = true;
+          return;
+        }
+        const [who, txt] = st.call[k++];
+        const b = document.createElement('div');
+        b.className = 'bub ' + (who === 'A' ? 'me' : 'them');
+        b.textContent = (who === 'A' ? 'Tú: ' : 'Tren B: ') + txt;
+        box.appendChild(b); box.scrollTop = box.scrollHeight;
+        ui.say(txt, who === 'A' ? 'callA' : 'callB', () => setTimeout(next, 300));
+      };
+      setTimeout(next, 1200);
+    };
     timer = setInterval(() => {
       if (my !== token || !sim) return;
-      for (let k = 0; k < 3; k++) sim.step(1);
+      for (let k = 0; k < rate; k++) sim.step(1);
       const own = { ...sim.ownFix(), ageS: 0 };
       const { alerts } = evaluate(own, sim.otherTrains(), DEFAULTS);
       const top = alerts[0];
@@ -169,12 +216,22 @@ export function runDemo(ui) {
       stEl.className = 'status lvl-' + (top?.level || 'none');
       stEl.textContent = top ? top.text : 'Sin riesgo detectado';
       renderScheme(svg, sim, own);
+      // Al primer aviso de peligro aparece el botón de llamar; en la demo se pulsa solo.
+      if (st.call && callState === 'none' && top && levelRank(top.level) >= 2) {
+        callState = 'offered';
+        const btn = $('#dm-call'); btn.hidden = false;
+        setTimeout(() => { if (my === token && callState === 'offered') startCall(); }, 3500);
+      }
       let line = explainNow(sim, own, top);
-      if (sim.braking && own.speed > 0.5 && !line.includes('Frena tú')) line = 'El maquinista ha oído «Frena» y está frenando. ' + line;
+      if (callState === 'offered') line = 'Aparece el botón para llamar al otro maquinista.';
+      else if (callState === 'talking') line = st.callNote;
+      else if (callState === 'done' && own.speed > 0.5) line = st.afterCall + ' ' + line;
+      else if (sim.braking && own.speed > 0.5 && !line.includes('Frena tú')) line = 'El maquinista ha oído «Frena» y está frenando. ' + line;
       $('#demo-live').textContent = line;
       if (top) {
         const prev = spoken.get(top.key);
-        if (!prev || levelRank(top.level) > levelRank(prev)) { ui.say(top.text, top.level); spoken.set(top.key, top.level); }
+        const quiet = callState === 'talking' && top.level !== 'urgente'; // no pisar la conversación
+        if (!quiet && (!prev || levelRank(top.level) > levelRank(prev))) { ui.say(top.text, top.level); spoken.set(top.key, top.level); }
       }
       const r = sim.result();
       if (r && !ended) {

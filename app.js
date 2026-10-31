@@ -148,6 +148,8 @@ function say(text, level = 'info', onend) {
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'es-ES'; if (esVoice) u.voice = esVoice;
   u.rate = level === 'urgente' ? 1.1 : 1.0; u.volume = 1;
+  if (level === 'callA') u.pitch = 0.8;   // las dos voces de la llamada suenan distintas
+  if (level === 'callB') { u.pitch = 1.3; u.rate = 1.05; }
   u.onend = finish;
   speechSynthesis.speak(u);
 }
