@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -47,7 +47,7 @@
     <h1>AIS para maquinistas</h1>
     <p class="muted">Una idea: que los móviles de los maquinistas se avisen entre sí cuando todo lo demás falla.</p>
     <button id="btn-demo" class="primary big">▶ Ver demostración</button>
-    <p class="muted small">Unos 4 minutos, con voz. Sube el volumen.</p>
+    <p class="muted small">Unos 4 minutos, con voz. Sube el volumen. <span style="opacity:.6">(versión 6)</span></p>
     <h3>Más ejemplos</h3>
     <p class="muted small">Otras situaciones, para verlas una a una. En estas tú pulsas el freno.</p>
     <div id="sim-list" class="sim-list"></div>
@@ -126,6 +126,6 @@
 <div id="toast" class="toast" hidden></div>
 
 <script src="vendor/leaflet/leaflet.js"></script>
-<script type="module" src="app.js"></script>
+<script type="module" src="app.js?v=6"></script>
 </body>
 </html>

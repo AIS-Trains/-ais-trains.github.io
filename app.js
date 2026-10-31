@@ -1,7 +1,7 @@
-import { evaluate, distance, bearing, move, levelRank, motionState, DEFAULTS } from './engine.js';
-import { SCENARIOS, Simulation, ORIGIN } from './sim.js';
-import { initScheme, renderScheme, explainNow } from './scheme.js';
-import { runDemo } from './demo.js';
+import { evaluate, distance, bearing, move, levelRank, motionState, DEFAULTS } from './engine.js?v=6';
+import { SCENARIOS, Simulation, ORIGIN } from './sim.js?v=6';
+import { initScheme, renderScheme, explainNow } from './scheme.js?v=6';
+import { runDemo } from './demo.js?v=6';
 
 // ---------- Ajustes ----------
 // Código de acceso del prototipo (se compara su SHA-256, no se guarda en claro).

@@ -1,6 +1,6 @@
 // Dibujo de las vías vistas desde arriba, con los trenes, la distancia que los separa
 // y la distancia que necesitas para frenar. Se usa en la demostración y en las simulaciones.
-import { stoppingDistance, sayDistance, DEFAULTS } from './engine.js';
+import { stoppingDistance, sayDistance, DEFAULTS } from './engine.js?v=6';
 
 const NS = 'http://www.w3.org/2000/svg';
 const TRACK = 'M-30 150 C 70 150 120 92 200 86 S 320 70 400 70';
