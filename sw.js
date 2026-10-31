@@ -1,6 +1,6 @@
 // Caché básica para que la app abra sin cobertura (túneles, zonas sin red).
-const CACHE = 'ais-cabina-v1';
-const SHELL = ['./', 'index.html', 'style.css', 'app.js', 'engine.js', 'sim.js', 'manifest.json', 'icon-192.png',
+const CACHE = 'ais-cabina-v2';
+const SHELL = ['./', 'index.html', 'style.css', 'app.js', 'engine.js', 'sim.js', 'scheme.js', 'manifest.json', 'icon-192.png',
   'vendor/leaflet/leaflet.css', 'vendor/leaflet/leaflet.js'];
 self.addEventListener('install', (e) => e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())));
 self.addEventListener('activate', (e) => e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())));

@@ -141,23 +141,28 @@ export function evaluate(own, others, cfg = DEFAULTS) {
       const gap = along - uncertainty;
       t.gap = gap; t.need = need;
       if (knownDifferentTrack) {
-        // Cruce normal en otra vía identificada: solo informativo y silencioso.
-        t.level = 'none';
+        // Cruce normal: su maquinista ha indicado otra vía. Solo informativo.
+        if (gap < need * 2 + cfg.infoRange) {
+          t.level = 'info';
+          alerts.push({ level: 'info', code: 'cross', key: 'cross:' + o.id, target: o.id,
+            text: `Cruce con un tren a ${sayDistance(along)}. Su maquinista indica que va por la otra vía.` });
+        }
         continue;
       }
-      const where = cross > 6 ? 'en tu vía o en la contigua' : 'en tu vía';
+      // El GPS no distingue vías separadas 4 o 5 metros: nunca afirmamos "en tu vía".
+      const where = 'Puede ir por tu vía.';
       const srcTxt = pub ? ` Dato público con ${Math.round(o.ageS)} segundos de retraso.` : '';
       const dir = opposite ? 'de frente' : 'delante';
       let level = 'none', text = '';
       if (gap < need) {
         level = 'urgente';
-        text = `Frena. Tren ${dir} ${where} a ${sayDistance(Math.max(0, along))}. Sin margen de frenado.`;
+        text = `Frena. Tren ${dir} a ${sayDistance(Math.max(0, along))}. ${where} Sin margen de frenado.`;
       } else if (gap < need * 1.5 + 500) {
         level = 'aviso';
-        text = `Tren ${dir} ${where} a ${sayDistance(along)}. Margen de frenado justo.`;
+        text = `Tren ${dir} a ${sayDistance(along)}. ${where} Margen de frenado justo.`;
       } else if (gap < need * 2 + cfg.infoRange) {
         level = 'info';
-        text = `Tren ${dir} ${where} a ${sayDistance(along)}.`;
+        text = `Tren ${dir} a ${sayDistance(along)}. ${where}`;
       }
       if (pub && level === 'urgente') level = 'aviso'; // un dato público con retraso nunca dispara "frena"
       if (level !== 'none') {

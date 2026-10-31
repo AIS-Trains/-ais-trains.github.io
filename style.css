@@ -57,3 +57,27 @@ button.ghost { background: transparent; }
 .toast { position: fixed; left: 16px; right: 16px; bottom: calc(90px + env(safe-area-inset-bottom)); background: var(--accent);
   color: #fff; padding: 14px; border-radius: 12px; text-align: center; font-weight: 600; z-index: 1000; }
 .train-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; }
+
+/* Simulación */
+.scheme { width: 100%; height: auto; display: block; background: #121a22; border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; }
+.sc-rail { stroke: #6b7c8c; stroke-width: 3; }
+.sc-end { fill: var(--muted); font-size: 11px; }
+.sc-lbl { fill: var(--muted); font-size: 10px; }
+.sc-small { fill: var(--fg); font-size: 10px; }
+.sc-brake { fill: rgba(245, 158, 11, 0.35); }
+.sc-gap { stroke: var(--fg); stroke-width: 1; stroke-dasharray: 3 3; }
+.sc-gapt { fill: var(--fg); font-size: 12px; font-weight: 700; }
+.sc-own { fill: #3b82f6; } .sc-other { fill: #ef4444; } .sc-deg { fill: #a855f7; }
+.sc-tt { fill: #fff; font-size: 10px; font-weight: 700; }
+.intro-text p { margin: 8px 0; }
+.todo { background: #1e3a5f; border-radius: 10px; padding: 12px; margin: 12px 0; }
+.sim-view { padding: 0 12px; }
+.explain { font-size: 16px; margin: 4px 0 8px; }
+.result { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
+.result p { margin: 0 0 10px; font-weight: 600; }
+.result .row { display: flex; gap: 8px; } .result .row button { flex: 1; }
+.drive.sim .voice-view { flex: 0; padding: 10px 12px; gap: 8px; }
+.drive.sim .speed { font-size: 48px; }
+.drive.sim .status { font-size: 17px; padding: 10px 12px; }
+.drive.sim .alert-list { display: none; }
+.drive.sim .ctrl { display: none; }

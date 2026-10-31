@@ -1,5 +1,6 @@
 import { evaluate, distance, bearing, move, levelRank, motionState, DEFAULTS } from './engine.js';
 import { SCENARIOS, Simulation, ORIGIN } from './sim.js';
+import { initScheme, renderScheme, explainNow } from './scheme.js';
 
 // ---------- Ajustes ----------
 // Código de acceso del prototipo (se compara su SHA-256, no se guarda en claro).
@@ -66,10 +67,29 @@ for (const s of SCENARIOS) {
   b.innerHTML = `<b></b><span></span>`;
   b.querySelector('b').textContent = s.title;
   b.querySelector('span').textContent = s.desc;
-  b.onclick = () => start('sim', s);
+  b.onclick = () => showIntro(s);
   simList.appendChild(b);
 }
 $('btn-real').onclick = () => start('real');
+
+// Pantalla de explicación antes de cada simulación
+let introScn = null;
+function spanFor(scn) { return Math.max(4000, ...scn.others.map((o) => o.along + 1000)); }
+function showIntro(scn) {
+  introScn = scn;
+  $('intro-title').textContent = scn.title;
+  $('intro-text').replaceChildren(...scn.intro.map((t) => { const p = document.createElement('p'); p.textContent = t; return p; }));
+  $('intro-todo').textContent = scn.todo;
+  const svg = $('intro-svg');
+  initScheme(svg, spanFor(scn));
+  const sim = new Simulation(scn);
+  renderScheme(svg, sim, sim.ownFix());
+  show('scr-intro');
+}
+$('btn-intro-go').onclick = () => start('sim', introScn);
+$('btn-intro-back').onclick = () => show('scr-home');
+$('btn-again').onclick = () => { const s = S.sim?.scn || introScn; stop(); start('sim', s); };
+$('btn-other').onclick = () => stop();
 $('seg-view').addEventListener('click', (e) => {
   const v = e.target.closest('button')?.dataset.v; if (!v) return;
   S.view = v; store.set('ais.view', v);
@@ -121,8 +141,12 @@ async function start(mode, scn) {
   S.mode = mode; S.active = true; S.spoken.clear(); S.lastTop = null; S.history = [];
   S.track = { status: mode === 'sim' ? 'ok' : 'unknown', id: null, checkedAt: 0, at: null, misses: 0 };
   show('scr-drive');
-  $('scr-drive').classList.toggle('with-map', S.view === 'map');
-  $('map').hidden = S.view !== 'map';
+  const useMap = S.view === 'map' && mode !== 'sim';
+  $('scr-drive').classList.toggle('with-map', useMap);
+  $('scr-drive').classList.toggle('sim', mode === 'sim');
+  $('map').hidden = !useMap;
+  $('sim-view').hidden = mode !== 'sim';
+  $('sim-result').hidden = true;
   $('sim-ctrl').hidden = mode !== 'sim';
   $('mode-tag').textContent = mode === 'sim' ? 'Simulación' : 'Cabina';
   $('mode-tag').className = 'tag' + (mode === 'sim' ? ' sim' : '');
@@ -130,9 +154,10 @@ async function start(mode, scn) {
   try { S.wakeLock = await navigator.wakeLock?.request('screen'); } catch {}
 
   if (mode === 'sim') {
-    S.sim = new Simulation(scn); S.simRate = 1; $('btn-fast').textContent = 'Velocidad x1';
-    $('sim-info').textContent = scn.desc;
-    say(`Simulación: ${scn.title}. Avisos activos.`, 'info');
+    S.sim = new Simulation(scn); S.simRate = 1; $('btn-fast').textContent = 'Ir más rápido';
+    initScheme($('sim-svg'), spanFor(scn));
+    S.simDone = false;
+    say('Simulación en marcha. Avisos activos.', 'info');
   } else {
     S.sim = null;
     if (!navigator.geolocation) { toast('Este navegador no da ubicación.'); return; }
@@ -140,8 +165,8 @@ async function start(mode, scn) {
       { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 });
     say('Avisos activos. Esperando posición GPS.', 'info');
   }
-  if (S.view === 'map') initMap();
-  if (S.showPublic) { pollPublic(); S.pubTimer = setInterval(pollPublic, 20000); }
+  if (useMap) initMap();
+  if (S.showPublic && mode !== 'sim') { pollPublic(); S.pubTimer = setInterval(pollPublic, 20000); }
   S.timer = setInterval(tick, 1000);
   tick();
 }
@@ -170,7 +195,7 @@ function setActive(on) {
 $('btn-active').onclick = () => { setActive(!S.active); say(S.active ? 'Avisos activos.' : 'Avisos en pausa.', 'info'); };
 $('btn-mute').onclick = () => { S.mutedUntil = Date.now() + 60000; toast('Avisos leves silenciados 1 minuto. Los urgentes siguen sonando.'); };
 $('btn-repeat').onclick = () => { if (S.lastText) say(S.lastText, S.lastTop?.level || 'info'); };
-$('btn-fast').onclick = (e) => { S.simRate = S.simRate === 4 ? 1 : 4; e.target.textContent = 'Velocidad x' + S.simRate; };
+$('btn-fast').onclick = (e) => { S.simRate = S.simRate === 4 ? 1 : 4; e.target.textContent = S.simRate === 4 ? 'Velocidad normal' : 'Ir más rápido'; };
 $('btn-brake').onclick = () => { if (S.sim) S.sim.braking = true; };
 $('btn-release').onclick = () => { if (S.sim) S.sim.braking = false; };
 
@@ -305,6 +330,18 @@ function tick() {
   }));
   speakPolicy(alerts);
   if (S.map) renderMap(own, others, targets);
+  if (S.sim && !S.simDone) {
+    renderScheme($('sim-svg'), S.sim, own);
+    $('sim-explain').textContent = explainNow(S.sim, own, top);
+    const r = S.sim.result();
+    if (r) {
+      S.simDone = true;
+      clearInterval(S.timer); S.timer = null;
+      $('sim-result-t').textContent = r.text;
+      $('sim-result').hidden = false; $('sim-ctrl').hidden = true;
+      say(r.text, 'info');
+    }
+  }
 }
 
 function speakPolicy(alerts) {
