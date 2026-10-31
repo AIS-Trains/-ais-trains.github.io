@@ -11,24 +11,12 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
 
-<!-- 1. Acceso -->
-<section id="scr-access" class="screen active">
-  <div class="card">
-    <h1>AIS para maquinistas</h1>
-    <p class="muted">Demostración de una idea. Acceso con código.</p>
-    <label for="code">Código de acceso</label>
-    <input id="code" type="password" autocomplete="off" inputmode="text" placeholder="Código">
-    <button id="btn-code" class="primary">Entrar</button>
-    <p id="code-err" class="err" hidden>Código no válido.</p>
-  </div>
-</section>
-
 <!-- 2. Aviso -->
-<section id="scr-terms" class="screen">
+<section id="scr-terms" class="screen active">
   <div class="card">
     <h2>Antes de empezar</h2>
     <ul class="terms">
@@ -47,7 +35,7 @@
     <h1>AIS para maquinistas</h1>
     <p class="muted">Una idea: que los móviles de los maquinistas se avisen entre sí cuando todo lo demás falla.</p>
     <button id="btn-demo" class="primary big">▶ Ver demostración</button>
-    <p class="muted small">Unos 4 minutos, con voz. Sube el volumen. <span style="opacity:.6">(versión 6)</span></p>
+    <p class="muted small">Unos 4 minutos, con voz. Sube el volumen. <span style="opacity:.6">(versión 7)</span></p>
     <h3>Más ejemplos</h3>
     <p class="muted small">Otras situaciones, para verlas una a una. En estas tú pulsas el freno.</p>
     <div id="sim-list" class="sim-list"></div>
@@ -126,6 +114,6 @@
 <div id="toast" class="toast" hidden></div>
 
 <script src="vendor/leaflet/leaflet.js"></script>
-<script type="module" src="app.js?v=6"></script>
+<script type="module" src="app.js?v=7"></script>
 </body>
 </html>

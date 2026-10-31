@@ -1,8 +1,8 @@
 // Demostración guiada: explica qué es, cómo se entra, la situación de fallo total,
 // cómo se comparten posiciones y dos ejemplos de avisos con voz en paralelo.
-import { evaluate, levelRank, DEFAULTS } from './engine.js?v=6';
-import { SCENARIOS, Simulation } from './sim.js?v=6';
-import { initScheme, renderScheme, explainNow, addPulse } from './scheme.js?v=6';
+import { evaluate, levelRank, DEFAULTS } from './engine.js?v=7';
+import { SCENARIOS, Simulation } from './sim.js?v=7';
+import { initScheme, renderScheme, explainNow, addPulse } from './scheme.js?v=7';
 
 const scn = (id) => SCENARIOS.find((s) => s.id === id);
 

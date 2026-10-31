@@ -1,12 +1,9 @@
-import { evaluate, distance, bearing, move, levelRank, motionState, DEFAULTS } from './engine.js?v=6';
-import { SCENARIOS, Simulation, ORIGIN } from './sim.js?v=6';
-import { initScheme, renderScheme, explainNow } from './scheme.js?v=6';
-import { runDemo } from './demo.js?v=6';
+import { evaluate, distance, bearing, move, levelRank, motionState, DEFAULTS } from './engine.js?v=7';
+import { SCENARIOS, Simulation, ORIGIN } from './sim.js?v=7';
+import { initScheme, renderScheme, explainNow } from './scheme.js?v=7';
+import { runDemo } from './demo.js?v=7';
 
 // ---------- Ajustes ----------
-// Código de acceso del prototipo (se compara su SHA-256, no se guarda en claro).
-// El código se entrega aparte, solo a maquinistas. Cambiarlo = cambiar este hash.
-const CODE_HASH = '2d26ff5965d9892e388c6f99eb54156a5a1ae0957f3ff929c7a47c95171e8afe';
 const PUBLIC_FEEDS = [
   'https://gtfsrt.renfe.com/vehicle_positions_LD.json',
   'https://gtfsrt.renfe.com/vehicle_positions.json',
@@ -53,12 +50,6 @@ async function sha256(s) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
-$('btn-code').onclick = async () => {
-  const h = await sha256($('code').value.trim().toUpperCase());
-  if (h === CODE_HASH) { store.set('ais.ok', h); show('scr-terms'); }
-  else $('code-err').hidden = false;
-};
-$('code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('btn-code').click(); });
 $('btn-terms').onclick = () => { store.set('ais.terms', '1'); show('scr-home'); };
 
 // ---------- Inicio ----------
@@ -452,6 +443,6 @@ S.view = 'voice';
 $('seg-view').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.v === S.view));
 S.showPublic = false;
 $('chk-public').checked = S.showPublic;
-if (store.get('ais.ok') === CODE_HASH) show(store.get('ais.terms') ? 'scr-home' : 'scr-terms');
+if (store.get('ais.terms')) show('scr-home');
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});

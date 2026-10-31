@@ -1,6 +1,6 @@
 // Escenarios de simulación para probar la app sin estar en cabina.
 // Las posiciones son ficticias (en mar abierto) para no evocar ningún lugar real.
-import { move, stoppingDistance } from './engine.js?v=6';
+import { move, stoppingDistance } from './engine.js?v=7';
 
 export const ORIGIN = { lat: 44.25, lon: -4.6 };
 const HEADING = 70;
