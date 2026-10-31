@@ -1,8 +1,8 @@
 // Demostración guiada: explica qué es, cómo se entra, la situación de fallo total,
 // cómo se comparten posiciones y dos ejemplos de avisos con voz en paralelo.
-import { evaluate, levelRank, DEFAULTS } from './engine.js?v=7';
-import { SCENARIOS, Simulation } from './sim.js?v=7';
-import { initScheme, renderScheme, explainNow, addPulse } from './scheme.js?v=7';
+import { evaluate, levelRank, DEFAULTS } from './engine.js?v=8';
+import { SCENARIOS, Simulation } from './sim.js?v=8';
+import { initScheme, renderScheme, explainNow, addPulse } from './scheme.js?v=8';
 
 const scn = (id) => SCENARIOS.find((s) => s.id === id);
 
@@ -37,7 +37,8 @@ const STEPS = [
     key: 'D', title: 'Los móviles se comparten la posición',
     visual: 'share',
     text: [
-      'Cada móvil envía cada segundo su posición GPS, su velocidad y su rumbo, y recibe los de los trenes cercanos.',
+      'Los móviles comparten su posición a través de la propia red móvil, sin necesitar ningún sistema adicional en la vía ni en el tren. Basta con tener cobertura.',
+      'Cada segundo, cada móvil envía su posición GPS, su velocidad y su rumbo, y recibe los de los trenes cercanos.',
       'Con eso calcula, para cada tren, la distancia y si queda margen para frenar. Si no queda, avisa por voz.',
       'En un túnel sin cobertura sigue estimando su posición con la última velocidad conocida.',
     ],
@@ -151,7 +152,7 @@ export function runDemo(ui) {
       ui.say(st.text.join(' '), 'narr', () => { if (my === token) startSim(st, my); });
     } else {
       if (st.visual === 'share') {
-        vis.innerHTML = '<svg id="dm-share" class="scheme"></svg><p class="muted small" style="margin:4px 0 0">Cada tren (su móvil) dice dónde está, a qué velocidad y hacia dónde va.</p>';
+        vis.innerHTML = '<svg id="dm-share" class="scheme"></svg><p class="muted small" style="margin:4px 0 0">Por la red móvil, cada tren dice dónde está, a qué velocidad y hacia dónde va.</p>';
         const svg = $('#dm-share');
         initScheme(svg, 6000);
         const fake = { travelled: 0, others: [

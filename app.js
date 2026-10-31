@@ -1,7 +1,7 @@
-import { evaluate, distance, bearing, move, levelRank, motionState, DEFAULTS } from './engine.js?v=7';
-import { SCENARIOS, Simulation, ORIGIN } from './sim.js?v=7';
-import { initScheme, renderScheme, explainNow } from './scheme.js?v=7';
-import { runDemo } from './demo.js?v=7';
+import { evaluate, distance, bearing, move, levelRank, motionState, DEFAULTS } from './engine.js?v=8';
+import { SCENARIOS, Simulation, ORIGIN } from './sim.js?v=8';
+import { initScheme, renderScheme, explainNow } from './scheme.js?v=8';
+import { runDemo } from './demo.js?v=8';
 
 // ---------- Ajustes ----------
 const PUBLIC_FEEDS = [
