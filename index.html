@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0f1419">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>AIS Cabina</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 1. Acceso -->
+<section id="scr-access" class="screen active">
+  <div class="card">
+    <h1>AIS Cabina</h1>
+    <p class="muted">Prototipo. Acceso solo para maquinistas.</p>
+    <label for="code">Código de acceso</label>
+    <input id="code" type="password" autocomplete="off" inputmode="text" placeholder="Código">
+    <button id="btn-code" class="primary">Entrar</button>
+    <p id="code-err" class="err" hidden>Código no válido.</p>
+  </div>
+</section>
+
+<!-- 2. Aviso legal / uso -->
+<section id="scr-terms" class="screen">
+  <div class="card">
+    <h2>Antes de empezar</h2>
+    <ul class="terms">
+      <li>Es un <b>complemento de último recurso</b>. No sustituye a la señalización ni a los sistemas de protección del tren.</li>
+      <li><b>Tú decides siempre.</b> Los avisos pueden fallar, llegar tarde o ser falsos.</li>
+      <li>Los avisos son <b>por voz</b>. Usa el altavoz de cabina o un auricular, nunca a la vista de viajeros.</li>
+      <li>Con iPhone, la app debe quedarse <b>en pantalla</b> (en un soporte). Si la cierras o bloqueas, deja de avisar.</li>
+      <li>Es un prototipo. Los datos de otros trenes de la red pública llegan con 15 a 30 s de retraso y solo incluyen parte de los trenes.</li>
+    </ul>
+    <button id="btn-terms" class="primary">Entendido</button>
+  </div>
+</section>
+
+<!-- 3. Inicio: elegir modo -->
+<section id="scr-home" class="screen">
+  <div class="card">
+    <h2>¿Cómo quieres usarla?</h2>
+    <button id="btn-real" class="primary big">En cabina (GPS real)</button>
+    <p class="muted small">Usa el GPS de este móvil. Pide permiso de ubicación.</p>
+    <h3>Probar en casa (simulación)</h3>
+    <div id="sim-list" class="sim-list"></div>
+    <h3>Pantalla</h3>
+    <div class="seg" id="seg-view">
+      <button data-v="voice" class="on">Solo voz</button>
+      <button data-v="map">Voz + mapa</button>
+    </div>
+    <label class="chk"><input type="checkbox" id="chk-public" checked> Mostrar trenes de datos públicos</label>
+  </div>
+</section>
+
+<!-- 4. Conducción -->
+<section id="scr-drive" class="screen drive">
+  <header class="bar">
+    <span id="mode-tag" class="tag">GPS</span>
+    <span id="gps-tag" class="tag">GPS —</span>
+    <span id="track-tag" class="tag">Vía —</span>
+    <button id="btn-stop" class="ghost">Salir</button>
+  </header>
+
+  <div id="voice-view" class="voice-view">
+    <div id="speed" class="speed">0<span>km/h</span></div>
+    <div id="status" class="status lvl-none">Sin trenes cerca</div>
+    <div id="alert-list" class="alert-list"></div>
+  </div>
+  <div id="map" class="map" hidden></div>
+
+  <div id="sim-ctrl" class="sim-ctrl" hidden>
+    <button id="btn-brake" class="warn">Frenar</button>
+    <button id="btn-release">Soltar freno</button>
+    <button id="btn-fast">Velocidad x1</button>
+    <span id="sim-info" class="muted small"></span>
+  </div>
+
+  <div class="ctrl">
+    <button id="btn-active" class="primary">Avisos: activos</button>
+    <button id="btn-mute">Silenciar 1 min</button>
+    <button id="btn-repeat">Repetir</button>
+  </div>
+  <p class="footnote">Complemento de último recurso. Tú decides siempre.</p>
+</section>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
